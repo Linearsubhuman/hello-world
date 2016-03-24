@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct bk_ms
+{
+  int id;
+  char name[20];
+  char auther[10];
+  char date[16];
+  float price;
+  struct bk_ms *next;
+}bk;
+typedef bk *link;
+
+void menu();
+void dispiay(link head);
+link add(link head);
+void search(link head);
+link cancel(link head);
+
+main()
+{
+  link head=NULL;
+
+  while(1)
+  {
+     int menuchoose;
+	  
+	 menu();
+	 scanf("%d",&menuchoose);
+	 switch(menuchoose)
+	 {
+	 case 0:
+		 printf("欢迎使用图书管理系统！");
+	     break; 
+	 case 1:
+         dispiay(head);
+		 break;
+     case 2:
+		 head=add(head);
+		 break;
+     case 3:
+         search(head);
+		 break;
+     case 4:
+         head=cancel(head);
+		 break;
+	 }
+  }
+
+}
+
+void menu()
+{
+
+    printf("********************************\n");
+	printf("***    1       图书列表     ***\n");
+	printf("***    2       添加图书     ***\n");
+	printf("***    3       查找图书     ***\n");
+	printf("***    4       删除图书     ***\n");
+	printf("***    0       退出系统     ***\n");
+	printf("********************************\n");
+	printf("请选择（0—4）项\n");
+}
+
+
+//列表
+void display(link head)
+{
+	link p;
+	int count=0;
+	printf("\t图书编号 \t书名 \t作者 \t日期 \t价格\n");
+	for(p=head;p!=NULL;p=p->next)
+	{
+	    printf("\t%d \t%s \t%s \t%s \t%f\n",p->id,p->name,p->auther,p->date,p->price);
+		count++;
+	}
+	if(count==0)
+	{
+		printf("目前没有任何图书信息\n");
+	}
+}
+
+
+
+//添加
+
+link add(link head)
+{
+   link p,q;
+   p=(link)malloc(sizeof(bk));
+
+   printf("请输入图书名");
+   scanf("%s",&p->name);
+   printf("输入作者名");
+   scanf("%s",&p->auther);
+   printf("输入图书编号");
+   scanf("%d",&p->id);
+   printf("输入图书定价");
+   scanf("%f",&p->price);
+   printf("输入日期");
+   scanf("%s",&p->date);
+
+   p->next=NULL;
+
+   if(head==NULL)
+   {
+	   head=p;
+   }
+	else
+	{
+		
+	    for(q=head;q->next!=NULL;q=q->next)
+		{
+			continue;
+		}
+	
+		q->next=p;
+	}
+
+   
+printf("图书添加成功！\n");
+
+return head;
+}
+
+
+//查找
+void search(link head)
+{
+   link p;
+   int assis;
+   char bookname[20];
+
+   printf("请输入图书名");
+   scanf("%s",&bookname);
+
+   for(p=head;p!=NULL;p=p->next)
+	{
+	    if(strcmp(p->name,bookname)==0)
+		{
+	        printf("\t%d \t%s \t%s \t%s \t%f",p->id,p->name,p->auther,p->date,p->price);
+	        assis=1;
+	        break;
+		}
+	}
+	if(assis==0)
+	{
+	    printf("抱歉，没有您要找到图书\n");
+	}
+}
+
+
+link cancel(link head)
+{
+    link p=head,q;
+	int bookid;
+	int n=0;
+	fflush(stdin);
+	printf("请输入要删除的图书编号\t");
+	scanf("%d",&bookid);
+	
+	if(head==NULL)
+	{
+		printf("没有这本书\n");
+		return head;
+	}
+	else if(p->id==bookid)   
+	{
+		head=p->next;
+		free(p);
+		printf("这本书已删除\n");
+		return head;  
+	}
+	else
+	{
+		for(q=p,p=p->next;p!=NULL;q=q->next,p=p->next)
+		{
+			
+			if(p->id==bookid)
+			{
+			
+				q->next=p->next;
+				
+				free(p);
+				printf("这本书已删除\n");
+				return head;
+			}
+		}
+	}
+	printf("没有这本书\n");
+	return head;
+}
